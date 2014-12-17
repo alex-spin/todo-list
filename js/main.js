@@ -59,7 +59,9 @@ $(function() {
 			e.preventDefault();
 			var newTaskTitle =  $(e.currentTarget).find('input[type=text]').val();
 			var newTask = new App.Models.Task({ title: newTaskTitle });
-			this.collection.add(newTask);
+			if ( $.trim(newTaskTitle) ) {
+				this.collection.add(newTask);
+			}
 		}
 	});
 
