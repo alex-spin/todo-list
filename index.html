@@ -1,0 +1,33 @@
+<!doctype html>
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="ie ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <title>To do list</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width">
+    <meta name="robots" content="index, follow">
+</head>
+
+<body>
+<h1>Список задач</h1>
+<form action="" id="addTask">
+	<input type="text" placeholder="Ваша новая задача">
+	<input type="submit" value="Добавить задачу">
+</form>
+<div class="tasks">
+	<script type="text/template" id="taskTemplate">
+		<span><%= title %></span> <button class="edit">Edit</button> <button class="delete">Delete</button>
+	</script>
+</div>
+
+<script src="js/underscore.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/backbone.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
