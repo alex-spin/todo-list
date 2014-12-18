@@ -1,12 +1,12 @@
 $(function() {
-	// пространство имён
+	// namespace
 	window.App = {
 		Models: {},
 		Collections: {},
 		Views:{}
 	};
 
-	// шаблон
+	// template
 	window.template = function(id) {
 		return _.template( $('#' + id).html() );
 	};
@@ -15,7 +15,7 @@ $(function() {
 	App.Models.Task = Backbone.Model.extend({
 		validate: function (attrs) {
 			if ( ! $.trim(attrs.title) ) {
-				return 'Имя задачи должно быть валидным!';
+				return 'Task name is invalid!';
 			}
 		}
 	});
@@ -34,7 +34,8 @@ $(function() {
 		},
 		events: {
 			'click .edit': 'editTask',
-			'click .delete': 'destroy'
+			'click .delete': 'destroy',
+			'click .complete': 'complete'
 		},
 		editTask: function  () {
 			var newTaskTitle = prompt('Как переименуем задачу?', this.model.get('title'));
@@ -45,9 +46,19 @@ $(function() {
 		},
 		destroy: function  () {
 			this.model.destroy();
+		},
+		complete: function () {
+			this.model.set('status', 'complete');
+			this.$el.addClass('task-complete');
+		},
+		hideTask: function () {
+			this.$el.addClass('hide');
+		},
+		showTask: function () {
+			this.$el.removeClass('hide');
 		}
 	});
-
+	// add new task
 	App.Views.AddTask = Backbone.View.extend({
 		el: '#addTask',
 		events: {
@@ -65,10 +76,27 @@ $(function() {
 		}
 	});
 
+	// navigation for task
+	App.Views.NavTask = Backbone.View.extend({
+		el: '.nav-task',
+		events: {
+			'click .show-completed' : 'showCompleted'
+		},
+		initialize: function() {
+		},
+		showCompleted: function() {
+			var modelCompleted = this.collection.where({'status':'complete'});
+			console.log(modelCompleted);
+			$.each(modelCompleted, function () {
+				console.log(this);
+			});
+		}
+	});
+
 	App.Collections.Task = Backbone.Collection.extend({
 		model: App.Models.Task
 	});
-
+	// collection view
 	App.Views.Tasks = Backbone.View.extend({
 		tagName: 'ul',
 		render: function() {
@@ -79,27 +107,31 @@ $(function() {
 			this.collection.on('add', this.addOne, this );
 		},
 		addOne: function(task) {
-			// создавать новый дочерний вид
+			// create new child
 			var taskView = new App.Views.Task({ model: task });
-			// добавлять его в корневой элемент
+			// add child to list
 			this.$el.append(taskView.render().el);
 		}
 	});
 
 	window.tasksCollection = new App.Collections.Task([
 		{
-			title: 'Сходить в магазин'
+			title: 'Сходить в магазин',
+			status: 'new'
 		},
 		{
-			title: 'Получить почту'
+			title: 'Получить почту',
+			status: 'new'
 		},
 		{
-			title: 'Сходить на работу'
+			title: 'Сходить на работу',
+			status: 'new'
 		}
 	]);
 
 	var tasksView = new App.Views.Tasks({ collection: tasksCollection});
 	var addTaskView = new App.Views.AddTask({ collection: tasksCollection });
+	var navView = new App.Views.NavTask({ collection: tasksCollection });
 
 	$('.tasks').html(tasksView.render().el);
 

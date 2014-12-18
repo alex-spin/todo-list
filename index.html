@@ -11,6 +11,14 @@
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="index, follow">
+	<style>
+		.task-complete {
+			text-decoration:line-through;
+		}
+		.hide {
+			display: none;
+		}
+	</style>
 </head>
 
 <body>
@@ -21,8 +29,13 @@
 </form>
 <div class="tasks">
 	<script type="text/template" id="taskTemplate">
-		<span><%= title %></span> <button class="edit">Edit</button> <button class="delete">Delete</button>
+		<span><%= title %></span> <button class="edit">Edit</button><button class="complete">Complete</button><button class="delete">Delete</button>
 	</script>
+</div>
+<div class="nav-task">
+	<button class="show-all">Show all</button>
+	<button class="show-completed">Show Completed</button>
+	<button class="show-active">Show Active</button>
 </div>
 
 <script src="js/libs/underscore.js"></script>
