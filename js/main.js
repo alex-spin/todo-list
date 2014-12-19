@@ -29,7 +29,10 @@ $(function() {
 		template: template('taskTemplate'),
 		render: function () {
 			var template = this.template(this.model.toJSON());
-			this.$el.html( template );
+			this.$el.html(template);
+			if (this.model.get('status', 'complete') == 'complete') {
+				this.$el.addClass('task-complete');
+			}
 			return this;
 		},
 		events: {
@@ -50,12 +53,6 @@ $(function() {
 		complete: function () {
 			this.model.set('status', 'complete');
 			this.$el.addClass('task-complete');
-		},
-		hideTask: function () {
-			this.$el.addClass('hide');
-		},
-		showTask: function () {
-			this.$el.removeClass('hide');
 		}
 	});
 	// add new task
@@ -69,27 +66,10 @@ $(function() {
 		submit: function(e) {
 			e.preventDefault();
 			var newTaskTitle =  $(e.currentTarget).find('input[type=text]').val();
-			var newTask = new App.Models.Task({ title: newTaskTitle });
+			var newTask = new App.Models.Task({ title: newTaskTitle, status: 'new'});
 			if ( $.trim(newTaskTitle) ) {
 				this.collection.add(newTask);
 			}
-		}
-	});
-
-	// navigation for task
-	App.Views.NavTask = Backbone.View.extend({
-		el: '.nav-task',
-		events: {
-			'click .show-completed' : 'showCompleted'
-		},
-		initialize: function() {
-		},
-		showCompleted: function() {
-			var modelCompleted = this.collection.where({'status':'complete'});
-			console.log(modelCompleted);
-			$.each(modelCompleted, function () {
-				console.log(this);
-			});
 		}
 	});
 
@@ -99,8 +79,19 @@ $(function() {
 	// collection view
 	App.Views.Tasks = Backbone.View.extend({
 		tagName: 'ul',
-		render: function() {
-			this.collection.each(this.addOne, this);
+		render: function(params) {
+			if (!params) {
+				this.collection.each(this.addOne, this);
+			} else {
+				var choiceM = this.collection.where({'status': params});
+				if (choiceM.length !== 0) {
+					var self = this;
+					this.$el.html('');
+					$.each(choiceM, function (){
+						self.addOne(this);
+					});
+				}
+			}
 			return this;
 		},
 		initialize: function() {
@@ -111,6 +102,29 @@ $(function() {
 			var taskView = new App.Views.Task({ model: task });
 			// add child to list
 			this.$el.append(taskView.render().el);
+		}
+	});
+
+
+	// navigation for task
+	App.Views.NavTask = Backbone.View.extend({
+		el: '.nav-task',
+		events: {
+			'click .show-completed' : 'showCompleted',
+			'click .show-active' : 'showActive',
+			'click .show-all' : 'showAll'
+		},
+		initialize: function() {
+		},
+		showCompleted: function() {
+			tasksView.render('complete');
+		},
+		showActive: function() {
+			tasksView.render('new');
+		},
+		showAll: function() {
+			tasksView.$el.html('');
+			tasksView.render();
 		}
 	});
 
