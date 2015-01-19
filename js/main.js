@@ -13,6 +13,11 @@ $(function() {
 
 	// task model
 	App.Models.Task = Backbone.Model.extend({
+		defaults: function() {
+			return {
+				title: "empty todo...",
+				status: 'new'
+		}},
 		validate: function (attrs) {
 			if ( ! $.trim(attrs.title) ) {
 				return 'Task name is invalid!';
@@ -43,6 +48,7 @@ $(function() {
 		editTask: function  () {
 			var newTaskTitle = prompt('Как переименуем задачу?', this.model.get('title'));
 			this.model.set('title', newTaskTitle, {validate: true});
+			this.model.save('title', newTaskTitle, {validate: true});
 		},
 		remove: function  () {
 			this.$el.remove();
@@ -52,6 +58,7 @@ $(function() {
 		},
 		complete: function () {
 			this.model.set('status', 'complete');
+			this.model.save('status', 'complete');
 			this.$el.addClass('task-complete');
 		}
 	});
@@ -74,11 +81,16 @@ $(function() {
 	});
 
 	App.Collections.Task = Backbone.Collection.extend({
-		model: App.Models.Task
+		model: App.Models.Task,
+		localStorage: new Backbone.LocalStorage('todos-backbone')
 	});
+
 	// collection view
 	App.Views.Tasks = Backbone.View.extend({
 		tagName: 'ul',
+		events: {
+
+		},
 		render: function(params) {
 			if (!params) {
 				this.collection.each(this.addOne, this);
@@ -95,13 +107,25 @@ $(function() {
 			return this;
 		},
 		initialize: function() {
+			this.changeCount();
+			this.collection.fetch();
 			this.collection.on('add', this.addOne, this );
+			this.collection.on('all', this.changeCount, this );
 		},
 		addOne: function(task) {
 			// create new child
 			var taskView = new App.Views.Task({ model: task });
+			taskView.model.save();
 			// add child to list
 			this.$el.append(taskView.render().el);
+		},
+		changeCount: function(countAll, countActive, countCompleted) {
+			countAll = this.collection.length;
+			countActive = (this.collection.where({'status': 'new'})).length;
+			countCompleted = (this.collection.where({'status': 'complete'})).length;
+			$('.show-all-count span').text(countAll);
+			$('.show-active-count span').text(countActive);
+			$('.show-completed-count span').text(countCompleted);
 		}
 	});
 
@@ -128,20 +152,7 @@ $(function() {
 		}
 	});
 
-	window.tasksCollection = new App.Collections.Task([
-		{
-			title: 'Сходить в магазин',
-			status: 'new'
-		},
-		{
-			title: 'Получить почту',
-			status: 'new'
-		},
-		{
-			title: 'Сходить на работу',
-			status: 'new'
-		}
-	]);
+	window.tasksCollection = new App.Collections.Task();
 
 	var tasksView = new App.Views.Tasks({ collection: tasksCollection});
 	var addTaskView = new App.Views.AddTask({ collection: tasksCollection });
