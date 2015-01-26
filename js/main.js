@@ -41,14 +41,14 @@ $(function() {
 			return this;
 		},
 		events: {
-			'click .edit': 'editTask',
+			'dblclick ': 'editTask',
 			'click .delete': 'destroy',
 			'click .complete': 'complete'
 		},
 		editTask: function  () {
 			var newTaskTitle = prompt('Как переименуем задачу?', this.model.get('title'));
 			this.model.set('title', newTaskTitle, {validate: true});
-			this.model.save('title', newTaskTitle, {validate: true});
+			//this.model.save('title', newTaskTitle, {validate: true});
 		},
 		remove: function  () {
 			this.$el.remove();
@@ -58,7 +58,7 @@ $(function() {
 		},
 		complete: function () {
 			this.model.set('status', 'complete');
-			this.model.save('status', 'complete');
+			//this.model.save('status', 'complete');
 			this.$el.addClass('task-complete');
 		}
 	});
@@ -80,9 +80,9 @@ $(function() {
 		}
 	});
 
-	App.Collections.Task = Backbone.Firebase.Collection.extend({
-		model: App.Models.Task,
-		url: 'https://scorching-inferno-4881.firebaseapp.com/'
+	App.Collections.Task = Backbone.Collection.extend({
+		model: App.Models.Task
+		//url: 'https://scorching-inferno-4881.firebaseapp.com/'
 	});
 
 	// collection view
@@ -108,14 +108,14 @@ $(function() {
 		},
 		initialize: function() {
 			this.changeCount();
-			this.collection.fetch();
+			//this.collection.fetch();
 			this.collection.on('add', this.addOne, this );
 			this.collection.on('all', this.changeCount, this );
 		},
 		addOne: function(task) {
 			// create new child
 			var taskView = new App.Views.Task({ model: task });
-			taskView.model.save();
+			//taskView.model.save();
 			// add child to list
 			this.$el.append(taskView.render().el);
 		},
