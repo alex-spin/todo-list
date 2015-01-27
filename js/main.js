@@ -80,9 +80,9 @@ $(function() {
 		}
 	});
 
-	App.Collections.Task = Backbone.Collection.extend({
-		model: App.Models.Task
-		//url: 'https://scorching-inferno-4881.firebaseapp.com/'
+	App.Collections.Task = Backbone.Firebase.Collection.extend({
+		model: App.Models.Task,
+		url: 'https://scorching-inferno-4881.firebaseapp.com/'
 	});
 
 	// collection view
