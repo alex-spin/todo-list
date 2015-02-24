@@ -18,7 +18,7 @@
 <div class="todo-list">
 	<h1>Список задач</h1>
 	<form action="" id="addTask" class="todo-form clearfix">
-		<input type="text" placeholder="Ваша новая задача">
+		<input type="text" class="search" placeholder="Ваша новая задача">
 		<input type="submit" value="Добавить задачу" class="btn">
 	</form>
 	<div class="tasks">
@@ -26,7 +26,7 @@
 			<span class="task-text"><%= title %></span> <span class="btn complete">Complete</span><span class="btn delete">Delete</span><span class="btn sub-task">Sub Task</span>
 		</script>
 		<script type="text/template" id="subTaskTemplate">
-			<span class="task-text"><%= title %></span> <span class="btn complete">Complete</span><span class="btn delete">Delete</span>
+			<span class="task-text"><%= title %></span> <span class="btn complete-sub">Complete</span><span class="btn delete-sub">Delete</span>
 		</script>
 	</div>
 	<div class="nav-task">
@@ -45,6 +45,6 @@
 <script src="js/libs/backbone.js"></script>
 <script src='js/libs/firebase.js'></script>
 <script src="js/libs/backbonefire.js"></script>
-<script src="js/main.js"></script>
+<script src="js/main2.js"></script>
 </body>
 </html>

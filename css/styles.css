@@ -99,7 +99,9 @@ a:hover { color: #036; }
     -moz-transition: color 0.3s ease-out, background-color 0.3s ease-out;
     transition: color 0.3s ease-out, background-color 0.3s ease-out;
 }
-
+.clearfix {
+	overflow: hidden;
+}
 .hide {
 	display: none;
 }
@@ -125,6 +127,9 @@ a:hover { color: #036; }
 .todo-list .task-text {
 	display: inline-block;
 	min-width:250px;
+}
+.sub-items {
+	padding-left:20px !important;
 }
 .task-complete {
 	opacity:0.5;
